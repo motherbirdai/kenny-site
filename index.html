@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kenny Lienhard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root { --bg: #f5f3f0; --text: #1a1a1a; --dim: #999; --border: #ddd; }
+  html { overflow: hidden; height: 100%; cursor: none; }
+  body {
+    font-family: 'Inter Tight', sans-serif; background: var(--bg); color: var(--text);
+    height: 100%; overflow: hidden; -webkit-font-smoothing: antialiased; cursor: none;
+  }
+  ::selection { background: var(--text); color: var(--bg); }
+  a { color: inherit; text-decoration: none; cursor: none; }
+
+  /* CURSOR */
+  .cursor {
+    position: fixed; z-index: 9999; pointer-events: none;
+    width: 12px; height: 12px; background: var(--text); border: 1.5px solid var(--text);
+    border-radius: 50%; transform: translate(-50%, -50%);
+    transition: width 0.25s cubic-bezier(0.16,1,0.3,1), height 0.25s cubic-bezier(0.16,1,0.3,1), background 0.25s ease;
+  }
+  .cursor.hovering { width: 56px; height: 56px; background: transparent; }
+  .cursor.light { background: var(--bg); border-color: var(--bg); }
+  .cursor.light.hovering { background: transparent; border-color: var(--bg); }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 24px 32px; display: flex; justify-content: space-between; align-items: center;
+    pointer-events: none; transition: color 0.3s;
+  }
+  nav > * { pointer-events: auto; }
+  .nav-name { font-size: 13px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; transition: color 0.3s; }
+  .menu-toggle {
+    width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+    font-size: 26px; font-weight: 300; cursor: none; user-select: none;
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), color 0.3s;
+  }
+  .menu-toggle.open { transform: rotate(45deg); }
+
+  /* SIDEBAR */
+  .sidebar {
+    position: fixed; top: 0; right: 0; bottom: 0; z-index: 99;
+    width: 340px; background: var(--bg); border-left: 1px solid var(--border);
+    transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+    display: flex; flex-direction: column; justify-content: center; padding: 60px 40px;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-links { display: flex; flex-direction: column; }
+  .sidebar-link {
+    font-size: 32px; font-weight: 300; color: var(--dim); padding: 12px 0;
+    border-bottom: 1px solid var(--border); display: block; cursor: none;
+    opacity: 0; transform: translateX(30px);
+    transition: color 0.2s, opacity 0.4s ease, transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  }
+  .sidebar.open .sidebar-link { opacity: 1; transform: translateX(0); }
+  .sidebar.open .sidebar-link:nth-child(1) { transition-delay: 0.08s; }
+  .sidebar.open .sidebar-link:nth-child(2) { transition-delay: 0.13s; }
+  .sidebar.open .sidebar-link:nth-child(3) { transition-delay: 0.18s; }
+  .sidebar.open .sidebar-link:nth-child(4) { transition-delay: 0.23s; }
+  .sidebar.open .sidebar-link:nth-child(5) { transition-delay: 0.28s; }
+  .sidebar-link:hover { color: var(--text); }
+  .sidebar-foot {
+    position: absolute; bottom: 32px; left: 40px; right: 40px;
+    font-size: 11px; color: var(--dim); letter-spacing: 0.06em; text-transform: uppercase;
+    display: flex; flex-direction: column; gap: 12px;
+    opacity: 0; transition: opacity 0.4s ease 0.35s;
+  }
+  .sidebar.open .sidebar-foot { opacity: 1; }
+  .sidebar-foot-row { display: flex; gap: 16px; }
+  .sidebar-foot a { transition: color 0.2s; cursor: none; }
+  .sidebar-foot a:hover { color: var(--text); }
+  .sidebar-overlay {
+    position: fixed; inset: 0; z-index: 98; background: rgba(0,0,0,0.05);
+    opacity: 0; pointer-events: none; transition: opacity 0.4s ease; cursor: none;
+  }
+  .sidebar-overlay.visible { opacity: 1; pointer-events: auto; }
+
+
+  /* SCROLL */
+  .hscroll { display: flex; height: 100vh; width: max-content; will-change: transform; position: relative; }
+  .panel {
+    width: 100vw; height: 100vh; flex-shrink: 0;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 100px 10vw; position: relative; overflow: hidden;
+  }
+  .divider { width: 1px; height: 100vh; background: var(--border); flex-shrink: 0; }
+
+  /* HERO */
+  .panel.hero-dark {
+    background: #0d0d0d;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background-size: cover; background-position: center;
+    opacity: 1;
+  }
+  .hero-overlay {
+    position: absolute; inset: 0; z-index: 0;
+    background: linear-gradient(to right, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 100%);
+  }
+  .hero-content {
+    position: relative; z-index: 1; max-width: 640px; will-change: transform;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    padding: 40px 44px; border: 1px solid rgba(255,255,255,0.08);
+  }
+  .hero-dark .label { color: rgba(255,255,255,0.5); }
+  .hero-dark .heading { color: var(--bg); }
+
+  /* TYPE */
+  .label { font-size: 11px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); margin-bottom: 24px; }
+  .heading { font-size: clamp(28px, 4.2vw, 48px); font-weight: 300; line-height: 1.2; letter-spacing: -0.02em; }
+
+  /* SCROLL HELP */
+  .scroll-help {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%); z-index: 90;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #888; transition: opacity 0.5s ease;
+  }
+  .scroll-help.hidden { opacity: 0; pointer-events: none; }
+  .scroll-help-line { width: 28px; height: 1px; background: #888; animation: nudge 2s ease-in-out infinite; }
+  @keyframes nudge { 0%,100%{transform:translateX(0)} 50%{transform:translateX(8px)} }
+
+  /* PROGRESS */
+  .progress-track { position: fixed; bottom: 0; left: 0; right: 0; height: 2px; background: rgba(0,0,0,0.06); z-index: 90; }
+  .progress-bar { height: 100%; background: var(--text); width: 0%; }
+  .counter { position: fixed; bottom: 32px; right: 32px; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; color: var(--dim); z-index: 90; }
+
+  /* VENTURES */
+  .vlist { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; gap: 12px; max-width: 580px; }
+  .vrow { display: block; padding: 24px; border: 1px solid var(--border); cursor: none; text-decoration: none; color: inherit; overflow: hidden; transition: border-color 0.35s, background 0.35s; }
+  .vrow:hover { border-color: var(--text); background: rgba(0,0,0,0.015); }
+  .vhead { display: flex; justify-content: space-between; align-items: baseline; margin-top: 14px; }
+  .vname { font-size: 17px; font-weight: 500; }
+  .vlogo { display: block; width: 28px; height: 28px; overflow: visible; }
+  .vlogo.vlogo-mb { width: 34px; height: 34px; }
+  .vlogo.vlogo-mb svg { width: 34px; height: 34px; }
+  .vlogo svg { display: block; width: 28px; height: 28px; fill: var(--text); }
+  .vlogo.vlogo-fab svg { width: 28px; height: 28px; }
+  .vstatus { font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
+  .vdesc { margin-top: 10px; font-size: 12.5px; color: var(--dim); line-height: 1.6; }
+
+  /* BACKGROUND */
+  .entries { display: flex; flex-direction: column; gap: 28px; max-width: 500px; }
+  .entry-year { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; color: var(--dim); margin-bottom: 4px; }
+  .entry-text { font-size: 15px; line-height: 1.65; }
+
+  /* PHILOSOPHY */
+  .philo { display: flex; flex-direction: column; gap: 32px; max-width: 460px; }
+  .pnum { font-size: 11px; font-weight: 500; color: var(--dim); letter-spacing: 0.1em; margin-bottom: 6px; }
+  .ptitle { font-size: 18px; font-weight: 500; margin-bottom: 4px; }
+  .pdesc { font-size: 13px; color: var(--dim); line-height: 1.65; }
+
+  /* CONTACT */
+  .clinks { display: flex; flex-direction: column; gap: 14px; }
+  .crow { display: flex; align-items: center; gap: 10px; font-size: 15px; color: var(--dim); transition: color 0.2s; cursor: none; }
+  .crow:hover { color: var(--text); }
+  .carrow { font-size: 13px; transition: transform 0.2s; }
+  .crow:hover .carrow { transform: translateX(4px); }
+
+  @media (max-width: 680px) {
+    .panel { padding: 80px 24px; }
+    nav { padding: 16px 20px; }
+    .sidebar { width: 100%; }
+    html, body, a, button, .menu-toggle, .crow { cursor: auto !important; }
+    .cursor { display: none !important; }
+    .vlist { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<nav>
+  <div class="nav-name" id="navName">Kenny Lienhard</div>
+  <div class="menu-toggle" id="mt" onclick="toggleSidebar()">+</div>
+</nav>
+
+<div class="sidebar-overlay" id="sOverlay" onclick="toggleSidebar()"></div>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-links">
+    <a href="#" class="sidebar-link" onclick="go(0)">Home</a>
+    <a href="#" class="sidebar-link" onclick="go(1)">Ventures</a>
+    <a href="#" class="sidebar-link" onclick="go(2)">Background</a>
+    <a href="#" class="sidebar-link" onclick="go(3)">Philosophy</a>
+    <a href="#" class="sidebar-link" onclick="go(4)">Contact</a>
+  </div>
+  <div class="sidebar-foot">
+    <span>Sunshine Coast, Australia</span>
+    <div class="sidebar-foot-row">
+      <a href="https://x.com/kenny83" target="_blank">Twitter</a>
+      <a href="https://linkedin.com/in/kennylienhard" target="_blank">LinkedIn</a>
+      <a href="https://github.com/motherbirdai" target="_blank">GitHub</a>
+    </div>
+  </div>
+</div>
+
+<div class="progress-track"><div class="progress-bar" id="prog"></div></div>
+<div class="counter" id="cnt">01 / 05</div>
+<div class="scroll-help" id="scrollHelp"><span class="scroll-help-line"></span> Scroll or drag sideways</div>
+
+<div class="hscroll" id="hs">
+
+
+  <div class="panel hero-dark" id="heroPanel">
+    <!-- SWAP IMAGE: change the URL below -->
+    <div class="hero-bg" id="heroBg" id="heroBgEl" style=""></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content" id="heroContent">
+      <div class="label" id="heroLabel">Founder, Motherbird AI</div>
+      <h1 class="heading" id="heroHeading">Innovating at the forefront of the AI revolution.</h1>
+    </div>
+  </div>
+  <div class="divider"></div>
+
+  <div class="panel">
+    <div class="label">Ventures</div>
+    <div class="vlist">
+      <a href="https://www.motherbird.ai/" target="_blank" class="vrow">
+        <span class="vlogo vlogo-mb"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 199 176.23" width="34" height="34"><path d="M163.57,114.61c-1.49-7.21-4.86-12.87-8.28-17.91-.02-.03-.04-.06-.07-.09-7.22-10.01-17.66-15.3-30.19-15.3-6.35,0-13.2,1.4-20,4.06-8.16-17.1-20.91-26.87-37.09-28.35-1.58-.13-3.19-.2-4.77-.2-8.85,0-17.46,2.02-25.59,6-1.7.83-2.59,2.75-2.12,4.58.45,1.78,2.05,3.01,3.87,3.01.06,0,.12,0,.18,0l11.55-.52c.47-.02.94-.03,1.4-.03,10.49,0,21.28,5.48,29.6,15.03,3.9,4.48,7.05,9.65,9.93,16.28.88,2.02,2.87,4.59,5.58,5.17.56.12,1.16.18,1.78.18,1.74,0,3.55-.46,4.98-1.27,5.88-3.31,12.12-4.99,18.56-4.99s13.17,1.85,19.05,5.35c4.9,2.92,9.32,6.67,14.76,12.53.78.84,1.85,1.28,2.93,1.28.62,0,1.25-.14,1.83-.44,1.6-.82,2.45-2.61,2.09-4.36Z"/></svg></span>
+        <div class="vhead"><div class="vname">Motherbird</div><div class="vstatus">Active</div></div>
+        <div class="vdesc">AI intelligence consoles for small and medium businesses. Custom dashboards that turn scattered data into clear, actionable insight.</div>
+      </a>
+      <a href="https://signal-v3.vercel.app/app" target="_blank" class="vrow">
+        <span class="vlogo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 301.55 301.55"><path d="M150.78,0C67.5,0,0,67.5,0,150.78v150.78h151.62c82.88-.47,149.93-67.79,149.93-150.78S234.05,0,150.78,0ZM83.68,166.49c-7.3-1.95-11.63-9.44-9.68-16.74l17.65-66.05c1.95-7.3,9.45-11.63,16.74-9.68,7.3,1.95,11.63,9.44,9.68,16.74l-17.65,66.05c-1.95,7.29-9.44,11.63-16.74,9.68ZM115.87,185.05c-5.34-5.33-5.35-13.99-.01-19.34l48.32-48.37c5.34-5.34,13.99-5.35,19.33-.01,5.34,5.33,5.35,13.99.01,19.34l-48.31,48.37c-5.34,5.34-14,5.35-19.34.01ZM217.25,209.15l-66.03,17.73c-7.29,1.96-14.79-2.37-16.76-9.66-1.96-7.29,2.37-14.79,9.66-16.75l66.02-17.73c7.3-1.96,14.8,2.36,16.76,9.66,1.96,7.29-2.37,14.79-9.66,16.75Z"/></svg></span>
+        <div class="vhead"><div class="vname">Signal</div><div class="vstatus">Active</div></div>
+        <div class="vdesc">Autonomous trading agent exploiting mispricings between Monte Carlo probability forecasts and prediction markets.</div>
+      </a>
+      <a href="https://www.fabriclayer.ai/" target="_blank" class="vrow">
+        <span class="vlogo vlogo-fab"><svg xmlns="http://www.w3.org/2000/svg" viewBox="50 54 150 142"><polygon points="136.46 192.26 112.19 148.94 112.04 192.1 98.6 192.16 98.59 146.98 125.31 146.92 150.97 192 136.46 192.26"/><polygon points="65.8 88.57 77.5 79.86 122.3 100.39 97.26 65.51 108.04 57.74 134.6 94.24 113.08 109.93 65.8 88.57"/><polygon points="174.45 81.12 185.22 88.89 158.67 125.48 137.18 109.81 142.86 58.17 154.74 66.73 149.1 115.71 174.45 81.12"/><polygon points="183.38 159.21 179.42 171.93 136.49 158.01 144.7 132.69 195.43 122.2 191.1 136.09 142.88 145.82 183.38 159.21"/><polygon points="66.11 157.52 99.68 121.04 58.72 134.14 54.57 121.53 97.52 107.61 105.73 132.89 70.79 171.25 66.11 157.52"/></svg></span>
+        <div class="vhead"><div class="vname">Fabric Layer</div><div class="vstatus">Active</div></div>
+        <div class="vdesc">AI trust scoring infrastructure. Evaluating 5,800+ AI tools across six transparency signals.</div>
+      </a>
+      <a href="https://cypherpunks.app/" target="_blank" class="vrow">
+        <span class="vlogo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 242.96 243.29"><polygon points="194.35 145.75 194.19 97.24 146.29 97.38 145.66 145.66 97.35 145.75 97.07 97.26 48.43 97.5 48.55 145.76 .03 145.94 0 48.64 48.51 48.17 48.78 .03 194.3 0 194.72 48.27 242.96 48.53 242.95 145.97 194.35 145.75"/><polygon points="97.35 145.75 97.46 194.56 145.99 194.23 145.66 145.66 194.35 145.75 194.43 242.98 48.74 242.95 48.55 145.76 97.35 145.75"/></svg></span>
+        <div class="vhead"><div class="vname">CypherPunks</div><div class="vstatus">Building</div></div>
+        <div class="vdesc">Discovery, provenance, and market intelligence for digital art collectors navigating on-chain creative work.</div>
+      </a>
+    </div>
+  </div>
+  <div class="divider"></div>
+
+  <div class="panel">
+    <div class="label">Background</div>
+    <div class="entries">
+      <div>
+        <div class="entry-year">2026</div>
+        <p class="entry-text">Founded Motherbird AI. Launched a portfolio of AI products across business intelligence, autonomous trading, and trust infrastructure.</p>
+      </div>
+      <div>
+        <div class="entry-year">2022 &ndash; 2023</div>
+        <p class="entry-text">Opened Australia's first physical NFT gallery. Hosted events for Binance. Featured on the Kraken Podcast.</p>
+      </div>
+      <div>
+        <div class="entry-year">2019 &ndash; 2021</div>
+        <p class="entry-text">Built Cryptowriter into a leading crypto publication with investment from Block.one. Managed 30+ writers globally through the Voice.com partnership.</p>
+      </div>
+      <div>
+        <div class="entry-year">2017</div>
+        <p class="entry-text">Founded EOSwriter, the leading information hub for the EOS ecosystem. First venture building media products from scratch.</p>
+      </div>
+    </div>
+  </div>
+  <div class="divider"></div>
+
+  <div class="panel">
+    <div class="label">Philosophy</div>
+    <div class="philo">
+      <div>
+        <div class="pnum">01</div>
+        <div class="ptitle">Compress complexity</div>
+        <p class="pdesc">Technology should make powerful things simple and keep them honest. If it creates more noise than clarity, it's broken.</p>
+      </div>
+      <div>
+        <div class="pnum">02</div>
+        <div class="ptitle">Ship, don't pitch</div>
+        <p class="pdesc">Ideas are cheap. Deployed products are the only proof that matters. Build, iterate, let users decide.</p>
+      </div>
+      <div>
+        <div class="pnum">03</div>
+        <div class="ptitle">Sovereignty by default</div>
+        <p class="pdesc">From crypto to AI, the thread is the same: give people control over their own data, tools, and decisions. Eight years of building on that principle.</p>
+      </div>
+    </div>
+  </div>
+  <div class="divider"></div>
+
+  <div class="panel" id="contactPanel">
+    <h2 class="heading" style="margin-bottom:36px">Let's connect.</h2>
+    <div class="clinks">
+      <a href="mailto:kenny@motherbird.ai" class="crow"><span class="carrow">&rarr;</span> kenny@motherbird.ai</a>
+      <a href="https://x.com/kenny83" target="_blank" class="crow"><span class="carrow">&rarr;</span> X / Twitter</a>
+      <a href="https://linkedin.com/in/kennylienhard" target="_blank" class="crow"><span class="carrow">&rarr;</span> LinkedIn</a>
+      <a href="https://github.com/motherbirdai" target="_blank" class="crow"><span class="carrow">&rarr;</span> GitHub</a>
+    </div>
+    <div style="position:absolute; bottom:32px; left:0; right:0; text-align:center; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; z-index:1;"><a href="https://rodarmor.com/blaster/" target="_blank" style="color:var(--dim); cursor:none; transition:color 0.2s;" onmouseenter="this.style.color='var(--text)'" onmouseleave="this.style.color='var(--dim)'">Artwork by Casey Rodarmor</a></div>
+  </div>
+
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  var cur = document.getElementById('cursor');
+  var mx = -100, my = -100, cx = -100, cy = -100;
+
+  document.addEventListener('mousemove', function(e) {
+    mx = e.clientX; my = e.clientY;
+  });
+
+  (function cursorLoop() {
+    cx += (mx - cx) * 0.15;
+    cy += (my - cy) * 0.15;
+    cur.style.left = cx + 'px';
+    cur.style.top = cy + 'px';
+    requestAnimationFrame(cursorLoop);
+  })();
+
+  document.querySelectorAll('a, .menu-toggle, .sidebar-link, .crow').forEach(function(el) {
+    el.addEventListener('mouseenter', function() { cur.classList.add('hovering'); });
+    el.addEventListener('mouseleave', function() { cur.classList.remove('hovering'); });
+  });
+
+  var sidebarOpen = false;
+  function toggleSidebar() {
+    sidebarOpen = !sidebarOpen;
+    document.getElementById('mt').classList.toggle('open', sidebarOpen);
+    document.getElementById('sidebar').classList.toggle('open', sidebarOpen);
+    document.getElementById('sOverlay').classList.toggle('visible', sidebarOpen);
+    if (sidebarOpen) {
+      navName.style.color = '#1a1a1a';
+      mt.style.color = '#1a1a1a';
+      cur.classList.remove('light');
+    }
+  }
+
+  var hs = document.getElementById('hs');
+  var prog = document.getElementById('prog');
+  var cnt = document.getElementById('cnt');
+  var navName = document.getElementById('navName');
+  var mt = document.getElementById('mt');
+  var scrollHelp = document.getElementById('scrollHelp');
+  var heroContent = document.getElementById('heroContent');
+  var heroBg = document.getElementById('heroBg');
+  var heroLabel = document.getElementById('heroLabel');
+  var heroHeading = document.getElementById('heroHeading');
+  var sx = 0, tx = 0, helpHidden = false;
+  var lastInteract = 0;
+
+  function magneticPull() {
+    var elapsed = Date.now() - lastInteract;
+    if (elapsed < 150 || dragging) return;
+    var pw = window.innerWidth + 1;
+    var nearest = Math.round(tx / pw) * pw;
+    nearest = Math.max(0, Math.min(nearest, maxS()));
+    var diff = nearest - tx;
+    if (Math.abs(diff) > 0.5 && Math.abs(diff) < pw * 0.45) {
+      tx += diff * 0.08;
+    }
+  }
+
+  function onInteract() { lastInteract = Date.now(); }
+
+  function maxS() { return hs.scrollWidth - window.innerWidth; }
+
+  window.addEventListener('wheel', function(e) {
+    if (sidebarOpen) return;
+    e.preventDefault();
+    var d = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+    tx = Math.max(0, Math.min(tx + d, maxS()));
+    hideHelp();
+    onInteract();
+  }, { passive: false });
+
+  var dragX = 0, dragging = false;
+  window.addEventListener('mousedown', function(e) { if (!sidebarOpen) { dragging = true; dragX = e.clientX; } });
+  window.addEventListener('mousemove', function(e) {
+    if (!dragging || sidebarOpen) return;
+    var dx = dragX - e.clientX;
+    tx = Math.max(0, Math.min(tx + dx * 1.5, maxS()));
+    dragX = e.clientX;
+    hideHelp();
+  });
+  window.addEventListener('mouseup', function() { dragging = false; onInteract(); });
+
+  var tsX = 0;
+  window.addEventListener('touchstart', function(e) { if (!sidebarOpen) tsX = e.touches[0].clientX; }, { passive: true });
+  window.addEventListener('touchmove', function(e) {
+    if (sidebarOpen) return;
+    var dx = tsX - e.touches[0].clientX;
+    if (Math.abs(dx) > 5) { e.preventDefault(); tx = Math.max(0, Math.min(tx + dx * 1.5, maxS())); tsX = e.touches[0].clientX; hideHelp(); }
+  }, { passive: false });
+
+  window.addEventListener('keydown', function(e) {
+    if (sidebarOpen) return;
+    var pw = window.innerWidth + 1;
+    var cur_panel = Math.round(tx / pw);
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { tx = Math.min((cur_panel + 1) * pw, maxS()); hideHelp(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { tx = Math.max((cur_panel - 1) * pw, 0); }
+  });
+
+  function hideHelp() {
+    if (!helpHidden && tx > 50) { helpHidden = true; scrollHelp.classList.add('hidden'); }
+  }
+
+  (function loop() {
+    magneticPull();
+    var d = tx - sx;
+    sx += d * 0.1;
+    if (Math.abs(d) < 0.5) sx = tx;
+    hs.style.transform = 'translateX(' + (-sx) + 'px)';
+
+    var m = maxS();
+    prog.style.width = (m > 0 ? (sx / m) * 100 : 0) + '%';
+
+    var pw = window.innerWidth;
+    var p = Math.min(5, Math.floor(sx / pw) + 1);
+    cnt.textContent = String(p).padStart(2, '0') + ' / 05';
+
+    var onDark = (sx < pw * 0.9) && !sidebarOpen;
+    cur.classList.toggle('light', onDark);
+    navName.style.color = onDark && !sidebarOpen ? '#f5f3f0' : '#1a1a1a';
+    mt.style.color = onDark && !sidebarOpen ? '#f5f3f0' : '#1a1a1a';
+    var onDarkPanel = sx < pw * 0.9;
+    cnt.style.color = onDarkPanel ? '#f5f3f0' : '#999';
+
+    heroContent.style.transform = 'translateX(' + (-Math.min(sx, pw) * 0.12) + 'px)';
+    heroBg.style.transform = 'translateX(' + (-Math.min(sx, pw) * 0.05) + 'px) scale(1.4)';
+
+
+    requestAnimationFrame(loop);
+  })();
+
+  function go(i) {
+    var pw = window.innerWidth + 1;
+    tx = Math.min(i * pw, maxS());
+    toggleSidebar();
+    hideHelp();
+  }
+</script>
+<script>
+
+<script>
+document.getElementById("heroBg").style.backgroundImage = "url(/public/images/hero.jpg)";
+</script>
+</body>
+</html>
