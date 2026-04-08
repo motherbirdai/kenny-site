@@ -2,8 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Kenny Lienhard</title>
+<meta name="description" content="Founder of Motherbird AI. Building AI products across business intelligence, autonomous trading, and trust infrastructure.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta property="og:title" content="Kenny Lienhard">
+<meta property="og:description" content="Founder of Motherbird AI. Building at the forefront of the AI revolution.">
+<meta property="og:image" content="/public/images/hero.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Kenny Lienhard">
+<meta name="twitter:description" content="Founder of Motherbird AI. Building at the forefront of the AI revolution.">
+<meta name="twitter:image" content="/public/images/hero.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -31,7 +41,7 @@
   nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     padding: 24px 32px; display: flex; justify-content: space-between; align-items: center;
-    pointer-events: none; transition: color 0.3s;
+    pointer-events: none; transition: color 0.3s, background 0.4s ease;
   }
   nav > * { pointer-events: auto; }
   .nav-name { font-size: 13px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; transition: color 0.3s; }
@@ -55,7 +65,7 @@
     font-size: 32px; font-weight: 300; color: var(--dim); padding: 12px 0;
     border-bottom: 1px solid var(--border); display: block; cursor: none;
     opacity: 0; transform: translateX(30px);
-    transition: color 0.2s, opacity 0.4s ease, transform 0.4s cubic-bezier(0.16,1,0.3,1);
+    transition: color 0.2s, padding-left 0.25s ease, opacity 0.4s ease, transform 0.4s cubic-bezier(0.16,1,0.3,1);
   }
   .sidebar.open .sidebar-link { opacity: 1; transform: translateX(0); }
   .sidebar.open .sidebar-link:nth-child(1) { transition-delay: 0.08s; }
@@ -63,7 +73,7 @@
   .sidebar.open .sidebar-link:nth-child(3) { transition-delay: 0.18s; }
   .sidebar.open .sidebar-link:nth-child(4) { transition-delay: 0.23s; }
   .sidebar.open .sidebar-link:nth-child(5) { transition-delay: 0.28s; }
-  .sidebar-link:hover { color: var(--text); }
+  .sidebar-link:hover { color: var(--text); padding-left: 12px; }
   .sidebar-foot {
     position: absolute; bottom: 32px; left: 40px; right: 40px;
     font-size: 11px; color: var(--dim); letter-spacing: 0.06em; text-transform: uppercase;
@@ -72,7 +82,7 @@
   }
   .sidebar.open .sidebar-foot { opacity: 1; }
   .sidebar-foot-row { display: flex; gap: 16px; }
-  .sidebar-foot a { transition: color 0.2s; cursor: none; }
+  .sidebar-foot a { transition: color 0.2s; cursor: none; color: var(--dim); }
   .sidebar-foot a:hover { color: var(--text); }
   .sidebar-overlay {
     position: fixed; inset: 0; z-index: 98; background: rgba(0,0,0,0.05);
@@ -82,18 +92,24 @@
 
 
   /* SCROLL */
-  .hscroll { display: flex; height: 100vh; width: max-content; will-change: transform; position: relative; }
+  .hscroll { display: flex; height: 100vh; width: max-content; will-change: transform; position: relative; z-index: 1; }
   .panel {
     width: 100vw; height: 100vh; flex-shrink: 0;
     display: flex; flex-direction: column; justify-content: center;
     padding: 100px 10vw; position: relative; overflow: hidden;
+    background: var(--bg);
   }
-  .divider { width: 1px; height: 100vh; background: var(--border); flex-shrink: 0; }
+  .divider { width: 1px; height: 100vh; background: var(--border); flex-shrink: 0; background-color: var(--bg); }
+  .panel-first { box-shadow: -8px 0 30px rgba(0,0,0,0.15); }
 
-  /* HERO */
-  .panel.hero-dark {
+  /* HERO — fixed behind scroll panels */
+  .hero-fixed {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0;
     background: #0d0d0d;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 100px 10vw; overflow: hidden;
   }
+  .hero-spacer { width: 100vw; height: 100vh; flex-shrink: 0; }
   .hero-bg {
     position: absolute; inset: 0; z-index: 0;
     background-size: cover; background-position: center;
@@ -103,13 +119,17 @@
     position: absolute; inset: 0; z-index: 0;
     background: linear-gradient(to right, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 100%);
   }
-  .hero-content {
-    position: relative; z-index: 1; max-width: 640px; will-change: transform;
-    background: rgba(0,0,0,0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    padding: 40px 44px; border: 1px solid rgba(255,255,255,0.08);
+  .hero-spacer {
+    position: relative; display: flex; flex-direction: column; justify-content: center;
+    padding: 100px 10vw;
   }
-  .hero-dark .label { color: rgba(255,255,255,0.5); }
-  .hero-dark .heading { color: var(--bg); }
+  .hero-content {
+    position: relative; z-index: 2; max-width: max-content;
+    background: var(--bg); padding: 40px 44px;
+    border: 1px solid var(--border);
+  }
+  .hero-content .label { color: var(--dim); }
+  .hero-content .heading { color: var(--text); }
 
   /* TYPE */
   .label { font-size: 11px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); margin-bottom: 24px; }
@@ -120,10 +140,10 @@
     position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%); z-index: 90;
     display: flex; align-items: center; gap: 10px;
     font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
-    color: #888; transition: opacity 0.5s ease;
+    color: #f5f3f0; transition: opacity 0.5s ease;
   }
   .scroll-help.hidden { opacity: 0; pointer-events: none; }
-  .scroll-help-line { width: 28px; height: 1px; background: #888; animation: nudge 2s ease-in-out infinite; }
+  .scroll-help-line { width: 28px; height: 1px; background: #f5f3f0; animation: nudge 2s ease-in-out infinite; }
   @keyframes nudge { 0%,100%{transform:translateX(0)} 50%{transform:translateX(8px)} }
 
   /* PROGRESS */
@@ -131,8 +151,9 @@
   .progress-bar { height: 100%; background: var(--text); width: 0%; }
   .counter { position: fixed; bottom: 32px; right: 32px; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; color: var(--dim); z-index: 90; }
 
+
   /* VENTURES */
-  .vlist { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; gap: 12px; max-width: 580px; }
+  .vlist { display: grid; grid-template-columns: 1fr 1fr 1fr; grid-auto-rows: 1fr; gap: 12px; max-width: 820px; }
   .vrow { display: block; padding: 24px; border: 1px solid var(--border); cursor: none; text-decoration: none; color: inherit; overflow: hidden; transition: border-color 0.35s, background 0.35s; }
   .vrow:hover { border-color: var(--text); background: rgba(0,0,0,0.015); }
   .vhead { display: flex; justify-content: space-between; align-items: baseline; margin-top: 14px; }
@@ -163,13 +184,44 @@
   .carrow { font-size: 13px; transition: transform 0.2s; }
   .crow:hover .carrow { transform: translateX(4px); }
 
+  @media (max-width: 1024px) {
+    .vlist { grid-template-columns: 1fr 1fr; max-width: 580px; }
+  }
+
   @media (max-width: 680px) {
-    .panel { padding: 80px 24px; }
+    html { overflow: auto; height: auto; }
+    body { overflow: auto; height: auto; }
+    .hero-fixed {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 0;
+    }
+    .hero-spacer {
+      width: 100%; height: 100vh; flex-shrink: 0;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 80px 24px; position: relative;
+    }
+    .hscroll {
+      display: flex; flex-direction: column; width: 100%; height: auto;
+      transform: none !important; will-change: auto; position: relative; z-index: 1;
+    }
+    .panel {
+      width: 100%; height: auto; min-height: 100vh;
+      padding: 80px 24px 60px;
+    }
+    .panel-first { box-shadow: 0 -8px 30px rgba(0,0,0,0.15); }
+    .divider { width: 100%; height: 1px; }
+    .hero-content { max-width: 100%; padding: 28px 28px; }
+    .hero-overlay { background: linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.25) 100%); }
+    .heading { font-size: clamp(22px, 5vw, 36px); }
     nav { padding: 16px 20px; }
     .sidebar { width: 100%; }
-    html, body, a, button, .menu-toggle, .crow { cursor: auto !important; }
+    html, body, a, button, .menu-toggle, .crow, .sidebar-link { cursor: auto !important; }
     .cursor { display: none !important; }
-    .vlist { grid-template-columns: 1fr; }
+    .vlist { grid-template-columns: 1fr; max-width: 100%; }
+    .counter { display: none; }
+    .progress-track { display: none; }
+    .entries { max-width: 100%; }
+    .philo { max-width: 100%; }
+    .sidebar-link { font-size: 26px; }
   }
 </style>
 </head>
@@ -192,34 +244,26 @@
     <a href="#" class="sidebar-link" onclick="go(4)">Contact</a>
   </div>
   <div class="sidebar-foot">
-    <span>Sunshine Coast, Australia</span>
-    <div class="sidebar-foot-row">
-      <a href="https://x.com/kenny83" target="_blank">Twitter</a>
-      <a href="https://linkedin.com/in/kennylienhard" target="_blank">LinkedIn</a>
-      <a href="https://github.com/motherbirdai" target="_blank">GitHub</a>
-    </div>
+    <a href="https://rodarmor.com/blaster/" target="_blank">Artwork by Casey Rodarmor</a>
   </div>
 </div>
 
 <div class="progress-track"><div class="progress-bar" id="prog"></div></div>
 <div class="counter" id="cnt">01 / 05</div>
-<div class="scroll-help" id="scrollHelp"><span class="scroll-help-line"></span> Scroll or drag sideways</div>
+
+<div class="hero-fixed" id="heroPanel">
+  <div class="hero-bg" id="heroBg" style=""></div>
+  <div class="hero-overlay"></div>
+</div>
 
 <div class="hscroll" id="hs">
 
-
-  <div class="panel hero-dark" id="heroPanel">
-    <!-- SWAP IMAGE: change the URL below -->
-    <div class="hero-bg" id="heroBg" id="heroBgEl" style=""></div>
-    <div class="hero-overlay"></div>
+  <div class="hero-spacer">
     <div class="hero-content" id="heroContent">
-      <div class="label" id="heroLabel">Founder, Motherbird AI</div>
-      <h1 class="heading" id="heroHeading">Innovating at the forefront of the AI revolution.</h1>
+      <h1 class="heading" id="heroHeading">&ldquo;Artificial intelligence<br>will be the most transformative<br>technology of the 21st century.&rdquo;<span style="display:block;margin-top:16px;font-size:13px;font-weight:400;letter-spacing:0.04em;color:var(--dim);">&mdash; Jensen Huang, CEO of NVIDIA</span></h1>
     </div>
   </div>
-  <div class="divider"></div>
-
-  <div class="panel">
+  <div class="panel panel-first">
     <div class="label">Ventures</div>
     <div class="vlist">
       <a href="https://www.motherbird.ai/" target="_blank" class="vrow">
@@ -241,6 +285,16 @@
         <span class="vlogo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 242.96 243.29"><polygon points="194.35 145.75 194.19 97.24 146.29 97.38 145.66 145.66 97.35 145.75 97.07 97.26 48.43 97.5 48.55 145.76 .03 145.94 0 48.64 48.51 48.17 48.78 .03 194.3 0 194.72 48.27 242.96 48.53 242.95 145.97 194.35 145.75"/><polygon points="97.35 145.75 97.46 194.56 145.99 194.23 145.66 145.66 194.35 145.75 194.43 242.98 48.74 242.95 48.55 145.76 97.35 145.75"/></svg></span>
         <div class="vhead"><div class="vname">CypherPunks</div><div class="vstatus">Building</div></div>
         <div class="vdesc">Discovery, provenance, and market intelligence for digital art collectors navigating on-chain creative work.</div>
+      </a>
+      <a href="https://hashd.art/" target="_blank" class="vrow">
+        <span class="vlogo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 145 91"><path d="M0 58.7708H27.1875V91H55.3289V58.7708H90.148V91H118.289V58.7708H145V31.7552H118.289V0H90.148V31.7552H55.3289V0H27.1875V31.7552H0V58.7708Z" fill="currentColor"/></svg></span>
+        <div class="vhead"><div class="vname">HASH'D</div><div class="vstatus">Active</div></div>
+        <div class="vdesc">A digital art publication exploring the intersection of creativity, technology, and on-chain culture.</div>
+      </a>
+      <a href="https://hendrix.gg/" target="_blank" class="vrow">
+        <span class="vlogo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 113 70"><path d="M111.551 63.5051C111.497 62.339 110.8 62.0068 108.846 62.2847C106.29 62.6712 103.68 63.1932 101.084 63.6814C99.7786 63.939 98.4394 64.4271 98.3301 65.3627L98.2549 66.1424V70.0068H111.579L111.558 64.3119C111.558 64.1017 111.606 63.7966 111.558 63.5186L111.551 63.5051Z" fill="currentColor"/><path d="M110.595 41.8847C108.846 41.6407 106.987 41.2542 105.238 41.0983C103.031 40.9288 100.783 40.7593 98.6239 40.7864C96.9362 40.7525 96.6219 41.2339 96.5741 42.6441C96.5741 43.8034 96.5263 45.0237 96.6219 46.2237C96.9226 49.9119 97.3257 53.3424 97.7767 56.461C97.927 58.0949 98.0705 59.6475 98.3233 61.1322C98.4189 61.9051 99.2389 62.3458 100.428 62.2237C102.935 62.0203 105.341 61.7763 107.841 61.2542C110.342 60.7458 111.087 60.0475 111.647 58.4949C111.647 58.4 111.797 58.2373 111.797 58.0881C112.255 54.4203 112.652 50.678 113 43.5864C112.904 42.5424 112.392 42.1763 110.595 41.878V41.8847Z" fill="currentColor"/><path d="M88.2928 32.6915C88.2928 35.2814 88.9555 36.2509 90.5817 36.4407C92.8775 36.7254 95.1187 36.9898 97.4486 37.3288C98.8084 37.5051 100.168 37.417 101.487 37.1187C105.716 36.1695 108.784 32.9695 110.916 28.2509C112.002 25.478 112.733 22.3729 112.932 19.1797C113.157 14.4339 112.863 9.64069 111.886 5.12543C110.561 -1 106 -0.0135498 103.5 -0.0135502H89.5C89 0 88.0946 -0.0135502 88.0946 1.36272C88.1561 5.3356 88.2654 9.62035 88.2996 14.3797C88.2996 19.8644 88.2654 25.8237 88.2996 32.678L88.2928 32.6915ZM101.48 8.90848C101.76 9.93899 101.822 10.9356 101.869 11.939C101.951 14.1831 101.992 16.4881 101.986 18.8407C101.986 19.5661 101.835 20.339 101.712 21.0712C101.398 22.3593 100.783 23.4034 99.232 22.739C99.1158 17.1526 98.9177 11.1526 98.8084 6.43391C100.482 5.95255 101.097 7.13899 101.48 8.91526V8.90848Z" fill="currentColor"/><path d="M93.6292 65.722C93.2055 65.261 92.7341 64.8135 92.2763 64.3593L91.9005 63.9593H91.88C89.3314 61.4847 86.3728 58.9559 83.667 55.3763C87.0219 51.7424 90.8824 48.5966 94.0391 44.2034C94.9411 42.9559 94.6404 42.4339 92.8366 41.7288C88.9761 40.3322 84.9721 38.8203 80.9613 37.7559C80.2097 37.6068 79.6084 37.5525 79.1574 38.1424C77.7499 39.8102 76.151 41.6271 74.7503 43.322C73.7459 41.8644 72.9874 40.1424 72.2427 38.8271C71.2861 37.2068 70.3363 36.0339 68.389 35.9796C64.1254 35.8034 59.8754 35.5729 55.6664 35.4983C54.1086 35.3898 53.7259 36.0474 54.3135 37.4305C54.5527 37.9661 54.867 38.4203 55.1608 38.922C58.5157 44.1288 61.2624 49.539 64.9248 54.4881C64.6173 54.9085 64.4738 55.1661 64.2757 55.3288C60.709 59.9661 57.9759 63.9322 55.9602 68.1491C55.6869 68.7322 55.3726 69.3559 55.0925 70H71.6687C72.5365 68.5288 73.4179 67.0169 74.1012 65.7763C75.4882 67.2271 76.3218 68.5424 77.2579 70H97.5648L93.8752 66.0542C93.7932 65.9457 93.759 65.8441 93.6428 65.722H93.6292Z" fill="currentColor"/><path d="M56.0354 29.8847C56.0627 32.0136 56.6093 32.5356 58.7685 32.6576C61.1121 32.8542 63.3942 33.0576 65.6149 33.2203C66.9268 33.2678 67.2342 33.1119 67.2342 31.5458C67.2752 27.5729 67.2342 23.6746 67.2342 19.9729C67.4665 20.3932 67.6989 20.739 67.8082 21.0847C68.9287 24.5153 70.0698 28.1695 71.2314 32.2576C71.7985 34.0678 71.9352 34.2509 73.4247 34.4203C75.7342 34.6915 78.0095 34.9627 80.3463 35.2407C81.1594 35.3424 81.9998 35.5458 82.8061 35.4712C83.7626 35.4712 84.0701 35.1119 84.2273 33.8441C84.3503 32.4136 84.5006 30.9559 84.4937 29.5458C84.5347 23.0441 84.5347 17.2271 84.4937 11.8576C84.4937 10.3322 84.3366 8.90847 84.4186 7.43051C84.4186 4.77288 84.4801 2.3322 84.5074 0H72.8781C73.0694 2.55593 73.1787 5.30169 73.3769 8.12203C73.4452 9.66102 73.5272 11.1593 73.6843 12.7525C73.2197 12.3593 72.9942 11.9593 72.8371 11.4373C71.1426 7.32881 69.3797 3.66102 67.7193 0.19661C67.6784 0.115254 67.6237 0.0677966 67.5759 0H57.682C57.4224 0.0271186 57.1696 0.0474576 56.9099 0.0813559C56.2267 0.128814 55.7552 0.467797 55.6391 1.11864C55.5161 1.62712 55.5229 2.09492 55.5229 2.48136C55.6391 7.5322 55.6869 12.6644 55.7894 18.0339C55.8304 21.8034 55.9397 25.7492 56.0217 29.8915L56.0354 29.8847Z" fill="currentColor"/><path d="M52.0871 20.5966C51.0758 20.5153 49.9689 20.5153 48.8757 20.5627C45.9854 20.6373 43.0132 20.8068 40.1366 20.6983C40.1366 20.3932 40.1366 20.1017 40.1366 19.8034C42.0361 19.7356 43.8468 19.7695 45.7053 19.5797C46.5184 19.5458 47.2495 19.5051 48.0626 19.3559C48.9167 19.2068 49.2447 18.7661 49.2378 18.0068C49.19 16.183 49.1627 14.5153 49.0738 12.739C48.944 11.5661 48.7049 11.3356 47.3246 11.4508C44.8854 11.6814 42.4051 11.939 39.9316 11.9661C39.9316 11.3491 39.9316 10.8678 39.9316 10.2169C40.4919 10.1559 40.9839 10.1017 41.3938 10.0542C44.7624 9.79661 48.0899 9.4644 51.4721 9.0983C53.2623 8.88813 53.7884 8.2305 53.8294 6.56949C53.8294 4.60339 53.8294 2.4661 53.8294 0.499997C53.8294 -0.0781284 53.3906 -3.36743e-06 53.3906 -3.36743e-06H30.3999V10.1356C30.3316 15.1932 30.2428 19.7898 30.1813 23.878C30.1403 25.0373 30.3111 26.1085 30.4683 27.1932C30.7279 28.3864 31.5342 28.9763 33.3175 29.2C39.5353 29.939 45.7121 30.6712 51.8889 31.3966C53.3853 31.5729 54.0412 31.0305 54.0822 29.6407C54.1232 27.2678 54.1232 24.9085 54.0822 22.5695C54.0822 21.2746 53.44 20.6983 52.0871 20.5898V20.5966Z" fill="currentColor"/><path d="M1.38006 23.9864C4.18832 24.3525 6.94875 24.7186 9.70918 25.0508C11.4174 25.2542 11.9845 25.0576 12.1485 24.183C12.4013 22.8 12.4764 21.3017 12.5926 19.4983C13.7678 19.6068 14.8337 19.7085 16.0773 19.7966V26.1085L16.8289 25.9119C16.9861 25.9593 17.1705 26 17.4234 26.0339C20.0676 26.3458 22.7051 26.6983 25.3903 26.9288C27.0985 27.078 27.6246 26.9085 27.7886 25.539C27.9595 24.7593 28.0073 23.9051 28.0209 23.0169H28.0346V0H16.0773V2.42034C16.0705 2.47458 16.05 2.52203 16.0431 2.58305C16.0021 3.38983 16.0021 4.14915 16.0431 4.85424C16.0431 5.15932 16.0636 5.45763 16.0773 5.76271V13.2136C14.7859 13.2 13.6243 13.1661 12.3876 13.1119C12.1758 10.9559 12.1553 8.82034 12.128 6.65763H12.1416L12.087 0H0.10234V4.7661C0.0886749 4.90847 0.0408456 5.05085 0.0408456 5.19322C0.0408456 5.78983 0.0750094 6.4 0.10234 7.01695V7.05763C0.136504 7.77627 0.163835 8.49492 0.157002 9.22712C0.0818421 13.1932 0.0476784 17.1458 -0.000150861 21.0847C-0.000150861 21.7288 -0.00698361 22.3119 0.0408456 22.9492C0.0681766 23.4915 0.5738 23.8576 1.38006 23.9864Z" fill="currentColor"/><path d="M51.1568 35.5187C51.1705 33.9254 50.7537 33.5187 48.902 33.2475C44.7887 32.6373 41.1263 32.1288 36.9788 31.5254C35.2297 31.2814 34.7309 31.5254 34.6762 33.078C34.6762 34.2373 34.7172 35.4305 34.7787 36.6509C35.1477 45.9661 34.97 56.7797 35.011 70.0068H51.3139C51.4438 57.4915 51.0543 46.0678 51.1568 35.5254V35.5187Z" fill="currentColor"/><path d="M26.9757 31.5186C24.9737 30.1966 22.7667 29.2813 20.4641 28.9491C18.4552 28.6169 16.5079 28.339 14.5537 28.061C10.7001 27.6203 6.88738 27.1932 2.97905 26.9559C1.03172 26.7593 0.27328 27.7559 0.27328 30.4474C0.27328 35.4983 0.280113 40.6034 0.27328 45.5864C0.239117 53.0237 0.232284 60.1627 0.19812 67.3966C0.19812 68.8271 1.35969 70 2.8014 70H13.6928C13.6381 68.7186 13.5766 67.6813 13.5493 66.2576C15.2028 65.5051 16.1389 65.9254 16.4191 67.7288V70H30.9045C30.8908 69.4644 30.884 68.9085 30.8772 68.3051C30.8772 65.9525 30.597 63.8644 29.333 62.4339C28.554 61.5457 28.6429 60.183 29.333 59.2271C30.2895 57.8983 31.048 56.5423 31.5741 55.1525C33.3301 50.2847 32.5307 40.3051 30.679 36.183C29.8796 34.3796 28.8273 32.7661 26.9688 31.5118L26.9757 31.5186ZM14.8065 51.3152C14.6016 47.8508 14.3487 44.5152 14.1506 41.2746C14.0959 40.2373 14.5127 39.8237 15.3532 39.722C17.157 39.3424 18.2639 40.1966 18.5099 42.1627C18.749 44.0746 18.8105 46.1491 18.7559 48.0407C18.7012 51.2407 17.1092 52.6644 14.7997 51.3152H14.8065Z" fill="currentColor"/></svg></span>
+        <div class="vhead"><div class="vname">Hendrix</div><div class="vstatus">Building</div></div>
+        <div class="vdesc">AI-powered music project exploring the creative frontier of generative sound and composition.</div>
       </a>
     </div>
   </div>
@@ -299,12 +353,11 @@
       <a href="https://linkedin.com/in/kennylienhard" target="_blank" class="crow"><span class="carrow">&rarr;</span> LinkedIn</a>
       <a href="https://github.com/motherbirdai" target="_blank" class="crow"><span class="carrow">&rarr;</span> GitHub</a>
     </div>
-    <div style="position:absolute; bottom:32px; left:0; right:0; text-align:center; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; z-index:1;"><a href="https://rodarmor.com/blaster/" target="_blank" style="color:var(--dim); cursor:none; transition:color 0.2s;" onmouseenter="this.style.color='var(--text)'" onmouseleave="this.style.color='var(--dim)'">Artwork by Casey Rodarmor</a></div>
   </div>
 
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
   var cur = document.getElementById('cursor');
   var mx = -100, my = -100, cx = -100, cy = -100;
 
@@ -324,6 +377,9 @@
     el.addEventListener('mouseenter', function() { cur.classList.add('hovering'); });
     el.addEventListener('mouseleave', function() { cur.classList.remove('hovering'); });
   });
+
+  document.getElementById('sidebar').addEventListener('mouseenter', function() { cur.classList.add('light'); });
+  document.getElementById('sidebar').addEventListener('mouseleave', function() { if (!sidebarOpen) cur.classList.remove('light'); });
 
   var sidebarOpen = false;
   function toggleSidebar() {
@@ -350,6 +406,7 @@
   var heroHeading = document.getElementById('heroHeading');
   var sx = 0, tx = 0, helpHidden = false;
   var lastInteract = 0;
+  var isMobile = window.innerWidth <= 680;
 
   function magneticPull() {
     var elapsed = Date.now() - lastInteract;
@@ -368,31 +425,29 @@
   function maxS() { return hs.scrollWidth - window.innerWidth; }
 
   window.addEventListener('wheel', function(e) {
-    if (sidebarOpen) return;
+    if (isMobile || sidebarOpen) return;
     e.preventDefault();
     var d = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
     tx = Math.max(0, Math.min(tx + d, maxS()));
-    hideHelp();
     onInteract();
   }, { passive: false });
 
   var dragX = 0, dragging = false;
-  window.addEventListener('mousedown', function(e) { if (!sidebarOpen) { dragging = true; dragX = e.clientX; } });
+  window.addEventListener('mousedown', function(e) { if (!isMobile && !sidebarOpen) { dragging = true; dragX = e.clientX; } });
   window.addEventListener('mousemove', function(e) {
-    if (!dragging || sidebarOpen) return;
+    if (isMobile || !dragging || sidebarOpen) return;
     var dx = dragX - e.clientX;
     tx = Math.max(0, Math.min(tx + dx * 1.5, maxS()));
     dragX = e.clientX;
-    hideHelp();
   });
   window.addEventListener('mouseup', function() { dragging = false; onInteract(); });
 
   var tsX = 0;
-  window.addEventListener('touchstart', function(e) { if (!sidebarOpen) tsX = e.touches[0].clientX; }, { passive: true });
+  window.addEventListener('touchstart', function(e) { if (!isMobile && !sidebarOpen) tsX = e.touches[0].clientX; }, { passive: true });
   window.addEventListener('touchmove', function(e) {
-    if (sidebarOpen) return;
+    if (isMobile || sidebarOpen) return;
     var dx = tsX - e.touches[0].clientX;
-    if (Math.abs(dx) > 5) { e.preventDefault(); tx = Math.max(0, Math.min(tx + dx * 1.5, maxS())); tsX = e.touches[0].clientX; hideHelp(); }
+    if (Math.abs(dx) > 5) { e.preventDefault(); tx = Math.max(0, Math.min(tx + dx * 1.5, maxS())); tsX = e.touches[0].clientX; }
   }, { passive: false });
 
   window.addEventListener('keydown', function(e) {
@@ -408,6 +463,19 @@
   }
 
   (function loop() {
+    if (isMobile) {
+      var scrollY = window.scrollY || window.pageYOffset;
+      var vh = window.innerHeight;
+      heroBg.style.transform = 'translateY(' + (-scrollY * 0.4) + 'px) scale(1.3)';
+      var navEl = document.querySelector('nav');
+      var navProgress = Math.max(0, Math.min(1, (scrollY - vh * 0.5) / (vh * 0.5)));
+      navEl.style.background = 'rgba(245,243,240,' + navProgress + ')';
+      var onDark = navProgress < 0.5 && !sidebarOpen;
+      navName.style.color = onDark ? '#f5f3f0' : '#1a1a1a';
+      mt.style.color = onDark ? '#f5f3f0' : '#1a1a1a';
+      requestAnimationFrame(loop);
+      return;
+    }
     magneticPull();
     var d = tx - sx;
     sx += d * 0.1;
@@ -423,27 +491,30 @@
 
     var onDark = (sx < pw * 0.9) && !sidebarOpen;
     cur.classList.toggle('light', onDark);
-    navName.style.color = onDark && !sidebarOpen ? '#f5f3f0' : '#1a1a1a';
-    mt.style.color = onDark && !sidebarOpen ? '#f5f3f0' : '#1a1a1a';
+    navName.style.color = onDark ? '#f5f3f0' : '#1a1a1a';
+    mt.style.color = onDark ? '#f5f3f0' : '#1a1a1a';
     var onDarkPanel = sx < pw * 0.9;
     cnt.style.color = onDarkPanel ? '#f5f3f0' : '#999';
 
-    heroContent.style.transform = 'translateX(' + (-Math.min(sx, pw) * 0.12) + 'px)';
-    heroBg.style.transform = 'translateX(' + (-Math.min(sx, pw) * 0.05) + 'px) scale(1.4)';
+    heroBg.style.transform = 'translateX(' + (-Math.min(sx, pw) * 0.4) + 'px) scale(1.3)';
 
 
     requestAnimationFrame(loop);
   })();
 
   function go(i) {
-    var pw = window.innerWidth + 1;
-    tx = Math.min(i * pw, maxS());
     toggleSidebar();
-    hideHelp();
+    if (isMobile) {
+      var targets = [document.getElementById('heroPanel')].concat(Array.from(document.querySelectorAll('.panel')));
+      if (targets[i]) targets[i].scrollIntoView({ behavior: 'smooth' });
+    } else {
+      var pw = window.innerWidth + 1;
+      tx = Math.min(i * pw, maxS());
+    }
   }
-</script>
-<script>
 
+  window.addEventListener('resize', function() { isMobile = window.innerWidth <= 680; });
+</script>
 <script>
 document.getElementById("heroBg").style.backgroundImage = "url(/public/images/hero.jpg)";
 </script>
