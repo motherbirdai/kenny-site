@@ -389,7 +389,6 @@
     document.getElementById('sidebar').classList.toggle('open', sidebarOpen);
     document.getElementById('sOverlay').classList.toggle('visible', sidebarOpen);
     if (sidebarOpen) {
-      navName.style.color = '#1a1a1a';
       mt.style.color = '#1a1a1a';
       cur.classList.remove('light');
     }
@@ -471,9 +470,9 @@
       var navEl = document.querySelector('nav');
       var navProgress = Math.max(0, Math.min(1, (scrollY - vh * 0.5) / (vh * 0.5)));
       navEl.style.background = 'rgba(245,243,240,' + navProgress + ')';
-      var onDark = navProgress < 0.5 && !sidebarOpen;
+      var onDark = navProgress < 0.5;
       navName.style.color = onDark ? '#f5f3f0' : '#1a1a1a';
-      mt.style.color = onDark ? '#f5f3f0' : '#1a1a1a';
+      mt.style.color = (onDark && !sidebarOpen) ? '#f5f3f0' : '#1a1a1a';
       requestAnimationFrame(loop);
       return;
     }
@@ -490,11 +489,11 @@
     var p = Math.min(5, Math.floor(sx / pw) + 1);
     cnt.textContent = String(p).padStart(2, '0') + ' / 05';
 
-    var onDark = (sx < pw * 0.9) && !sidebarOpen;
-    cur.classList.toggle('light', onDark);
-    navName.style.color = onDark ? '#f5f3f0' : '#1a1a1a';
-    mt.style.color = onDark ? '#f5f3f0' : '#1a1a1a';
     var onDarkPanel = sx < pw * 0.9;
+    var onDark = onDarkPanel && !sidebarOpen;
+    cur.classList.toggle('light', onDark);
+    navName.style.color = onDarkPanel ? '#f5f3f0' : '#1a1a1a';
+    mt.style.color = onDark ? '#f5f3f0' : '#1a1a1a';
     cnt.style.color = onDarkPanel ? '#f5f3f0' : '#999';
 
     heroBg.style.transform = 'translateX(' + (-Math.min(sx, pw) * 0.4) + 'px) scale(1.3)';
