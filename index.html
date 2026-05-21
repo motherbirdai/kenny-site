@@ -209,12 +209,11 @@
     position: absolute; inset: 0; z-index: 1;
     background: rgba(0,0,0,0.5);
   }
-  .contact-panel .pfp,
-  .contact-panel .heading,
-  .contact-panel .clinks { position: relative; z-index: 2; }
-  .contact-panel .heading { color: #f5f3f0; }
-  .contact-panel .crow { color: rgba(245,243,240,0.6); }
-  .contact-panel .crow:hover { color: #f5f3f0; }
+  .contact-content {
+    position: relative; z-index: 2; max-width: max-content;
+    background: var(--bg); padding: 40px 44px;
+    border: 1px solid var(--border);
+  }
 
   .pfp { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 24px; image-rendering: pixelated; }
   .clinks { display: flex; flex-direction: column; gap: 14px; }
@@ -389,13 +388,15 @@
   <div class="panel contact-panel" id="contactPanel">
     <div class="contact-bg" id="contactBg"></div>
     <div class="contact-overlay"></div>
-    <img src="/public/images/pfp.png" alt="Kenny Lienhard" class="pfp">
-    <h2 class="heading" style="margin-bottom:36px">Let's connect.</h2>
-    <div class="clinks">
-      <a href="mailto:kenny@motherbird.ai" class="crow"><span class="carrow">&rarr;</span> kenny@motherbird.ai</a>
-      <a href="https://x.com/kenny83" target="_blank" class="crow"><span class="carrow">&rarr;</span> X / Twitter</a>
-      <a href="https://linkedin.com/in/kennylienhard" target="_blank" class="crow"><span class="carrow">&rarr;</span> LinkedIn</a>
-      <a href="https://github.com/motherbirdai" target="_blank" class="crow"><span class="carrow">&rarr;</span> GitHub</a>
+    <div class="contact-content">
+      <img src="/public/images/pfp.png" alt="Kenny Lienhard" class="pfp">
+      <h2 class="heading" style="margin-bottom:36px">Let's connect.</h2>
+      <div class="clinks">
+        <a href="mailto:kenny@motherbird.ai" class="crow"><span class="carrow">&rarr;</span> kenny@motherbird.ai</a>
+        <a href="https://x.com/kenny83" target="_blank" class="crow"><span class="carrow">&rarr;</span> X / Twitter</a>
+        <a href="https://linkedin.com/in/kennylienhard" target="_blank" class="crow"><span class="carrow">&rarr;</span> LinkedIn</a>
+        <a href="https://github.com/motherbirdai" target="_blank" class="crow"><span class="carrow">&rarr;</span> GitHub</a>
+      </div>
     </div>
   </div>
 
