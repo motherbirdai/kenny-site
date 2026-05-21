@@ -211,14 +211,12 @@
     position: absolute; inset: 0; z-index: 1;
     background: rgba(0,0,0,0.5);
   }
-  .contact-content {
-    position: relative; z-index: 2; max-width: max-content;
-    background: var(--bg); padding: 40px 44px;
-    border: 1px solid var(--border);
-    display: flex; align-items: center; gap: 48px;
-  }
-  .contact-left { display: flex; flex-direction: column; }
-  .contact-left .heading { margin-bottom: 0; white-space: nowrap; }
+  .contact-panel .pfp,
+  .contact-panel .heading,
+  .contact-panel .clinks { position: relative; z-index: 2; }
+  .contact-panel .heading { color: #f5f3f0; }
+  .contact-panel .crow { color: rgba(245,243,240,0.6); }
+  .contact-panel .crow:hover { color: #f5f3f0; }
 
   .pfp { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 24px; image-rendering: pixelated; }
   .clinks { display: flex; flex-direction: column; gap: 14px; }
@@ -253,7 +251,6 @@
     .panel-first { box-shadow: 0 -8px 30px rgba(0,0,0,0.15); }
     .divider { width: 100%; height: 1px; }
     .hero-content { max-width: 100%; padding: 28px 28px; }
-    .contact-content { flex-direction: column; gap: 24px; max-width: 100%; padding: 28px 28px; }
     .hero-overlay { background: linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.25) 100%); }
     .heading { font-size: clamp(22px, 5vw, 36px); }
     nav { padding: 16px 20px; }
@@ -394,17 +391,13 @@
   <div class="panel contact-panel" id="contactPanel">
     <div class="contact-bg" id="contactBg"></div>
     <div class="contact-overlay"></div>
-    <div class="contact-content">
-      <div class="contact-left">
-        <img src="/public/images/pfp.png" alt="Kenny Lienhard" class="pfp">
-        <h2 class="heading">Let's connect.</h2>
-      </div>
-      <div class="clinks">
-        <a href="mailto:kenny@motherbird.ai" class="crow"><span class="carrow">&rarr;</span> kenny@motherbird.ai</a>
-        <a href="https://x.com/kenny83" target="_blank" class="crow"><span class="carrow">&rarr;</span> X / Twitter</a>
-        <a href="https://linkedin.com/in/kennylienhard" target="_blank" class="crow"><span class="carrow">&rarr;</span> LinkedIn</a>
-        <a href="https://github.com/motherbirdai" target="_blank" class="crow"><span class="carrow">&rarr;</span> GitHub</a>
-      </div>
+    <img src="/public/images/pfp.png" alt="Kenny Lienhard" class="pfp">
+    <h2 class="heading" style="margin-bottom:36px">Let's connect.</h2>
+    <div class="clinks">
+      <a href="mailto:kenny@motherbird.ai" class="crow"><span class="carrow">&rarr;</span> kenny@motherbird.ai</a>
+      <a href="https://x.com/kenny83" target="_blank" class="crow"><span class="carrow">&rarr;</span> X / Twitter</a>
+      <a href="https://linkedin.com/in/kennylienhard" target="_blank" class="crow"><span class="carrow">&rarr;</span> LinkedIn</a>
+      <a href="https://github.com/motherbirdai" target="_blank" class="crow"><span class="carrow">&rarr;</span> GitHub</a>
     </div>
   </div>
 
@@ -431,7 +424,7 @@
     el.addEventListener('mouseleave', function() { cur.classList.remove('hovering'); });
   });
 
-  document.querySelectorAll('.vrow, .hero-content, .contact-content').forEach(function(el) {
+  document.querySelectorAll('.vrow, .hero-content').forEach(function(el) {
     el.addEventListener('mouseenter', function() { cur.classList.remove('light'); cur.classList.add('on-card'); });
     el.addEventListener('mouseleave', function() { cur.classList.remove('on-card'); });
   });
