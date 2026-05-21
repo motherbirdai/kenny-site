@@ -155,10 +155,10 @@
 
   /* VENTURES BG */
   .ventures-panel {
-    background: transparent; position: relative;
+    background: transparent; position: relative; overflow: hidden;
   }
   .ventures-bg {
-    position: absolute; inset: 0; z-index: 0;
+    position: absolute; inset: -20%; z-index: 0;
     background: url(/public/images/ventures-bg.png) center/cover no-repeat;
     will-change: transform;
   }
@@ -492,7 +492,7 @@
       var venturesEl = document.getElementById('venturesPanel');
       if (venturesEl) {
         var vRect = venturesEl.getBoundingClientRect();
-        venturesBg.style.transform = 'translateY(' + (-vRect.top * 0.15) + 'px) scale(1.2)';
+        venturesBg.style.transform = 'translateY(' + (-vRect.top * 0.1) + 'px)';
       }
       var navEl = document.querySelector('nav');
       var navProgress = Math.max(0, Math.min(1, (scrollY - vh * 0.5) / (vh * 0.5)));
@@ -526,7 +526,7 @@
     heroBg.style.transform = 'translateX(' + (-Math.min(sx, pw) * 0.4) + 'px) scale(1.3)';
 
     var venturesOffset = sx - pw * 2;
-    venturesBg.style.transform = 'translateX(' + (-venturesOffset * 0.15) + 'px) scale(1.2)';
+    venturesBg.style.transform = 'translateX(' + (-venturesOffset * 0.1) + 'px)';
 
     requestAnimationFrame(loop);
   })();
