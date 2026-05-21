@@ -544,7 +544,8 @@
     var p = Math.min(5, Math.floor(sx / pw) + 1);
     cnt.textContent = String(p).padStart(2, '0') + ' / 05';
 
-    var onDarkPanel = sx < pw * 0.9;
+    var currentPanel = sx / pw;
+    var onDarkPanel = currentPanel < 0.9 || (currentPanel > 1.9 && currentPanel < 2.9) || currentPanel > 3.9;
     var onDark = onDarkPanel && !sidebarOpen;
     cur.classList.toggle('light', onDark);
     navName.style.color = onDarkPanel ? '#f5f3f0' : '#1a1a1a';
