@@ -159,7 +159,7 @@
   }
   .ventures-bg {
     position: absolute; inset: -20%; z-index: 0;
-    background: url(/public/images/ventures-bg.png) center top/cover no-repeat;
+    background: url(/public/images/hero.png) center bottom/cover no-repeat;
     will-change: transform;
   }
   .ventures-overlay {
@@ -196,6 +196,26 @@
   .pdesc { font-size: 13px; color: var(--dim); line-height: 1.65; }
 
   /* CONTACT */
+  /* CONTACT BG */
+  .contact-panel {
+    background: transparent; position: relative; overflow: hidden;
+  }
+  .contact-bg {
+    position: absolute; inset: -20%; z-index: 0;
+    background: url(/public/images/hero.png) center 30%/cover no-repeat;
+    will-change: transform;
+  }
+  .contact-overlay {
+    position: absolute; inset: 0; z-index: 1;
+    background: rgba(0,0,0,0.5);
+  }
+  .contact-panel .pfp,
+  .contact-panel .heading,
+  .contact-panel .clinks { position: relative; z-index: 2; }
+  .contact-panel .heading { color: #f5f3f0; }
+  .contact-panel .crow { color: rgba(245,243,240,0.6); }
+  .contact-panel .crow:hover { color: #f5f3f0; }
+
   .pfp { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 24px; image-rendering: pixelated; }
   .clinks { display: flex; flex-direction: column; gap: 14px; }
   .crow { display: flex; align-items: center; gap: 10px; font-size: 15px; color: var(--dim); transition: color 0.2s; cursor: none; }
@@ -366,7 +386,9 @@
   </div>
   <div class="divider"></div>
 
-  <div class="panel" id="contactPanel">
+  <div class="panel contact-panel" id="contactPanel">
+    <div class="contact-bg" id="contactBg"></div>
+    <div class="contact-overlay"></div>
     <img src="/public/images/pfp.png" alt="Kenny Lienhard" class="pfp">
     <h2 class="heading" style="margin-bottom:36px">Let's connect.</h2>
     <div class="clinks">
@@ -426,6 +448,7 @@
   var heroLabel = document.getElementById('heroLabel');
   var heroHeading = document.getElementById('heroHeading');
   var venturesBg = document.getElementById('venturesBg');
+  var contactBg = document.getElementById('contactBg');
   var sx = 0, tx = 0, helpHidden = false;
   var lastInteract = 0;
   var isMobile = window.innerWidth <= 680;
@@ -494,6 +517,11 @@
         var vRect = venturesEl.getBoundingClientRect();
         venturesBg.style.transform = 'translateY(' + (-vRect.top * 0.1) + 'px)';
       }
+      var contactEl = document.getElementById('contactPanel');
+      if (contactEl) {
+        var cRect = contactEl.getBoundingClientRect();
+        contactBg.style.transform = 'translateY(' + (-cRect.top * 0.1) + 'px)';
+      }
       var navEl = document.querySelector('nav');
       var navProgress = Math.max(0, Math.min(1, (scrollY - vh * 0.5) / (vh * 0.5)));
       navEl.style.background = 'rgba(245,243,240,' + navProgress + ')';
@@ -527,6 +555,9 @@
 
     var venturesOffset = sx - pw * 2;
     venturesBg.style.transform = 'translateX(' + (-venturesOffset * 0.1) + 'px)';
+
+    var contactOffset = sx - pw * 4;
+    contactBg.style.transform = 'translateX(' + (-contactOffset * 0.1) + 'px)';
 
     requestAnimationFrame(loop);
   })();
