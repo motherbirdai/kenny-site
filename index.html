@@ -412,8 +412,8 @@
   });
 
   (function cursorLoop() {
-    cx += (mx - cx) * 0.15;
-    cy += (my - cy) * 0.15;
+    cx += (mx - cx) * 0.35;
+    cy += (my - cy) * 0.35;
     cur.style.left = cx + 'px';
     cur.style.top = cy + 'px';
     requestAnimationFrame(cursorLoop);
