@@ -38,7 +38,7 @@
   .nav-name { font-size: 13px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; transition: color 0.3s; }
   .menu-toggle {
     width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
-    font-size: 26px; font-weight: 300; user-select: none;
+    font-size: 26px; font-weight: 300; cursor: pointer; user-select: none;
     transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), color 0.3s;
   }
   .menu-toggle.open { transform: rotate(45deg); }
@@ -209,7 +209,7 @@
   .pfp { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 24px; image-rendering: pixelated; }
   .clinks { display: flex; flex-direction: column; gap: 14px; width: max-content; }
   .crow { display: inline-block; font-size: 15px; color: var(--dim); transition: color 0.2s, padding-left 0.25s ease; }
-  .crow:hover { color: var(--text); padding-left: 9px; }
+  .crow:hover { color: var(--text); padding-left: 5px; }
 
   @media (max-width: 1024px) {
     .vlist { grid-template-columns: 1fr 1fr; max-width: 580px; }
