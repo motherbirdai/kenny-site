@@ -415,13 +415,13 @@
 
   function magneticPull() {
     var elapsed = Date.now() - lastInteract;
-    if (elapsed < 150 || dragging) return;
+    if (elapsed < 100 || dragging) return;
     var pw = window.innerWidth + 1;
     var nearest = Math.round(tx / pw) * pw;
     nearest = Math.max(0, Math.min(nearest, maxS()));
     var diff = nearest - tx;
     if (Math.abs(diff) > 0.5 && Math.abs(diff) < pw * 0.45) {
-      tx += diff * 0.08;
+      tx += diff * 0.12;
     }
   }
 
@@ -493,7 +493,7 @@
     }
     magneticPull();
     var d = tx - sx;
-    sx += d * 0.18;
+    sx += d * 0.12;
     if (Math.abs(d) < 0.5) sx = tx;
     hs.style.transform = 'translateX(' + (-sx) + 'px)';
 
